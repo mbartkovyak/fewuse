@@ -3,10 +3,18 @@ from rest_framework.viewsets import ModelViewSet
 from lendloop.models.product import Product
 from lendloop.models.category import Category
 from lendloop.serializers import ProductSerializer, CategorySerializer, ProductViewSerializer, TagSerializer
+from rest_framework.permissions import IsAuthenticated
+
+
+
 
 class ProductViewSet(ModelViewSet):
+    # foreign_key - select_related | many to many - prefetch_related
     queryset = Product.objects.all().\
-        select_related("category").prefetch_related("tags")
+        select_related("category").prefetch_related("tags").select_related("location")
+        #.prefetch_related("rankings")
+    #limits only for authenticated users
+    permission_classes = (IsAuthenticated,)
 
     #If we use GET method, we see all the data,
     #if we do POST, DELETE, etc we see only Product data and category id (no category details)
