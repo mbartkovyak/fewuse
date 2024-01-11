@@ -2,7 +2,8 @@ from rest_framework.viewsets import ModelViewSet
 
 from lendloop.models.product import Product
 from lendloop.models.category import Category
-from lendloop.serializers import ProductSerializer, CategorySerializer, ProductViewSerializer, TagSerializer
+from lendloop.models.availability import Availability
+from lendloop.serializers import ProductSerializer, CategorySerializer, ProductViewSerializer, AvailabilitySerializer
 from rest_framework.permissions import IsAuthenticated
 
 
@@ -28,4 +29,11 @@ class ProductViewSet(ModelViewSet):
 class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = (IsAuthenticated,)
+
+class AvailabilityViewSet(ModelViewSet):
+    queryset = Availability.objects.all()
+    serializer_class = AvailabilitySerializer
+    permission_classes = (IsAuthenticated,)
+
 
