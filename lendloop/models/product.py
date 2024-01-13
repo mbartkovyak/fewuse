@@ -3,7 +3,7 @@ from django.db import models
 from lendloop.models.category import Category
 from lendloop.models.tag import Tag
 from lendloop.models.location import Location
-#from lendloop.models.ranking import Ranking
+from lendloop.models.ranking import Ranking
 
 def non_negative_validator(value):
     if value <= 0:
@@ -20,7 +20,10 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products', blank=True, null=True)
     tags = models.ManyToManyField(Tag, related_name="products", blank=True)
     location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='products', blank=True, null=True)
-    #rankings = models.ManyToManyField(Ranking, related_name="products", blank=True)
+    rankings = models.ManyToManyField(Ranking, related_name="products", blank=True)
+    status = models.ManyToManyField(
+        "lendloop.Status", through="lendloop.ProductStatus"
+    )
 
     def __str__(self):
         return self.name

@@ -1,4 +1,4 @@
-"""from django.db import models
+from django.db import models
 from django.core.exceptions import ValidationError
 
 def non_negative_validator(value):
@@ -10,7 +10,4 @@ class Ranking(models.Model):
     comment = models.TextField(blank=True)
     class Meta:
         verbose_name_plural = 'Rankings'
-
-    def __str__(self):
-        return self.name"""
 
