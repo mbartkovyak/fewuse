@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from lendloop.models import Product, Category,Tag, Location, Availability, ProductStatus
+from lendloop.models import Product, Category,Tag, Location, Availability, ProductRent
 from rest_framework.authtoken.models import Token
 
 
@@ -38,10 +38,10 @@ class ProductViewSerializer(ProductSerializer):
     category = CategorySerializer()
     tags = TagSerializer(many=True)
 
-class ProductStatusSerializer(serializers.ModelSerializer):
+class ProductRentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ProductStatus
-        fields = ("status", "product", "date")
+        model = ProductRent
+        fields = ("rent", "product", "date")
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -54,3 +54,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("username", "password", "token")
+
+class RentSerializer(serializers.ModelSerializer):
+    rent_product = ProductRentSerializer(many=True)
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())

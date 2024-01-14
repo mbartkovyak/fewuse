@@ -22,9 +22,7 @@ class Product(models.Model):
     tags = models.ManyToManyField(Tag, related_name="products", blank=True)
     location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='products', blank=True, null=True)
     rankings = models.ManyToManyField(Ranking, related_name="products", blank=True)
-    status = models.ManyToManyField(
-        "lendloop.Status", through="lendloop.ProductStatus"
-    )
+    rent = models.ManyToManyField("lendloop.Rent", through="lendloop.ProductRent", related_name="rent")
 
     def __str__(self):
         return self.name

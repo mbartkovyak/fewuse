@@ -2,9 +2,9 @@ from .availability import Availability
 from .category import Category
 from .location import Location
 from .product import Product
-from .product_status import ProductStatus
+from .product_rent import ProductRent
 from .ranking import Ranking
-from .status import Status
+from .rent import Rent
 from .subcategory import SubCategory
 from .tag import Tag
 __all__ = [
@@ -12,9 +12,9 @@ __all__ = [
     "Category",
     "Location",
     "Product",
-    "ProductStatus",
+    "ProductRent",
     "Ranking",
-    "Status",
+    "Rent",
     "SubCategory",
     "Tag",
 ]
