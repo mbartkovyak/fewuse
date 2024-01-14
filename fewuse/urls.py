@@ -19,8 +19,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from lendloop.viewsets import ProductViewSet, CategoryViewSet, AvailabilityViewSet
 from rest_framework.authtoken.views import obtain_auth_token
-
-import lendloop.views
+from lendloop.views import registration_view
 
 router = DefaultRouter()
 router.register('products', ProductViewSet)
@@ -30,7 +29,8 @@ router.register('availabilities', AvailabilityViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/auth/", obtain_auth_token),
-    path('api/', include(router.urls))
+    path('api/', include(router.urls)),
+    path('api/register/', registration_view),
 ]
 
 

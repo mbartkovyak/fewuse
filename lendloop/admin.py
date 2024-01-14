@@ -1,14 +1,5 @@
 from django.contrib import admin
-
-from lendloop.models.product import Product
-from lendloop.models.category import Category
-from lendloop.models.tag import Tag
-from lendloop.models.location import Location
-from lendloop.models.ranking import Ranking
-from lendloop.models.availability import Availability
-from lendloop.models.status import Status
-from lendloop.models.product_status import ProductStatus
-from lendloop.models.subcategory import SubCategory
+from lendloop.models import Product, Category,Tag, Location, Availability, ProductStatus, Ranking, Status, SubCategory
 
 
 # Register your models here.

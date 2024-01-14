@@ -10,4 +10,4 @@ class Availability(models.Model):
         verbose_name_plural = "Availabilities"
 
     def __str__(self):
-        return self.name
+        return str(self.product)

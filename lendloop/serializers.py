@@ -1,11 +1,7 @@
+from django.contrib.auth.models import User
 from rest_framework import serializers
-from lendloop.models.product import Product
-from lendloop.models.category import Category
-from lendloop.models.tag import Tag
-from lendloop.models.location import Location
-from lendloop.models.availability import Availability
-from lendloop.models.product_status import ProductStatus
-from lendloop.models.subcategory import SubCategory
+from lendloop.models import Product, Category,Tag, Location, Availability, ProductStatus
+from rest_framework.authtoken.models import Token
 
 
 
@@ -13,7 +9,7 @@ from lendloop.models.subcategory import SubCategory
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ('id', 'name','created_at','price','description','category', 'tags','location','rankings')
+        fields = ('id', 'name','user','created_at','price','description','category', 'tags','location','rankings')
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -46,3 +42,15 @@ class ProductStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductStatus
         fields = ("status", "product", "date")
+
+
+class RegistrationSerializer(serializers.ModelSerializer):
+    token = serializers.SerializerMethodField(read_only=True)
+
+    def get_token(self, user):
+        token, _ = Token.objects.get_or_create(user=user)
+        return token.key
+
+    class Meta:
+        model = User
+        fields = ("username", "password", "token")

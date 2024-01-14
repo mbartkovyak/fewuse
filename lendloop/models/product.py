@@ -14,6 +14,7 @@ def non_negative_validator(value):
 # Create your models here.
 class Product(models.Model):
     name = models.CharField(max_length=40)
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='products')
     created_at = models.DateField()
     price = models.FloatField(validators=[non_negative_validator])
     description = models.CharField(max_length=300, blank=True)
