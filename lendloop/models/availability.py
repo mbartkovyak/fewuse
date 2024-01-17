@@ -10,4 +10,5 @@ class Availability(models.Model):
         verbose_name_plural = "Availabilities"
 
     def __str__(self):
-        return str(self.product)
+        return f"{self.date_from} x {self.date_to}"
+

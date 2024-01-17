@@ -137,6 +137,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
+    "DATE_INPUT_FORMATS": ["%d-%m-%Y"],
     'DEFAULT_PREMISSION_CLASSES': [
         'rest_framework.permission.IsAuthenticated',
     ],

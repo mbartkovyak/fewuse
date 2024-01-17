@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from lendloop.viewsets import ProductViewSet, CategoryViewSet, AvailabilityViewSet
+    #RentViewSet
 from rest_framework.authtoken.views import obtain_auth_token
 from lendloop.views import registration_view
 
@@ -25,6 +26,7 @@ router = DefaultRouter()
 router.register('products', ProductViewSet)
 router.register('categories', CategoryViewSet)
 router.register('availabilities', AvailabilityViewSet)
+#router.register('rents', RentViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

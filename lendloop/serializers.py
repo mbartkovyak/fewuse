@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from lendloop.models import Product, Category,Tag, Location, Availability, ProductRent
+from lendloop.models import Product, Category,Tag, Location, Availability
+    #, ProductRent, Rent
 from rest_framework.authtoken.models import Token
 
 
@@ -20,7 +21,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class AvailabilitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Availability
-        fields = ('id', 'product','date_from', 'date_to')
+        fields = ('id','date_from', 'date_to')
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -38,11 +39,6 @@ class ProductViewSerializer(ProductSerializer):
     category = CategorySerializer()
     tags = TagSerializer(many=True)
 
-class ProductRentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProductRent
-        fields = ("rent", "product", "date")
-
 
 class RegistrationSerializer(serializers.ModelSerializer):
     token = serializers.SerializerMethodField(read_only=True)
@@ -55,6 +51,30 @@ class RegistrationSerializer(serializers.ModelSerializer):
         model = User
         fields = ("username", "password", "token")
 
+
+"""class ProductRentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductRent
+        fields = ("product", "date_from", "date_to")
+
 class RentSerializer(serializers.ModelSerializer):
     rent_product = ProductRentSerializer(many=True)
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Rent
+        fields = ("id", "user", "rent_product")
+
+    def create(self, validated_data):
+        rent_product = validated_data.pop("rent_product")
+        rent = Rent.objects.create(**validated_data)
+
+        rent_product_items = []
+        for rent_products in rent_product:
+            rent_product_items.append(
+                ProductRent(rent=rent, **rent_products)
+            )
+
+        ProductRent.objects.bulk_create(rent_product_items)
+
+        return rent"""

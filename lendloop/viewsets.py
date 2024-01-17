@@ -1,8 +1,9 @@
 from rest_framework.viewsets import ModelViewSet
 
-from lendloop.models import Product, Category
-from lendloop.models.availability import Availability
+from lendloop.models import Product, Category, Availability
+    #Rent
 from lendloop.serializers import ProductSerializer, CategorySerializer, ProductViewSerializer, AvailabilitySerializer
+    #RentSerializer
 from rest_framework.permissions import IsAuthenticated
 
 
@@ -34,4 +35,6 @@ class AvailabilityViewSet(ModelViewSet):
     serializer_class = AvailabilitySerializer
     permission_classes = (IsAuthenticated,)
 
-
+#class RentViewSet(ModelViewSet):
+#    serializer_class = RentSerializer
+#    queryset = Rent.objects.all()
