@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from lendloop.models import Product, Category,Tag, Location, Availability
-    #, ProductRent, Rent
+from lendloop.models import Product, Category,Tag, Location, Availability, Order, OrderProduct
 from rest_framework.authtoken.models import Token
 
 
@@ -52,29 +51,29 @@ class RegistrationSerializer(serializers.ModelSerializer):
         fields = ("username", "password", "token")
 
 
-"""class ProductRentSerializer(serializers.ModelSerializer):
+class OrderProductSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ProductRent
-        fields = ("product", "date_from", "date_to")
+        model = OrderProduct
+        fields = ("product","insurance", "number_of_days")
 
-class RentSerializer(serializers.ModelSerializer):
-    rent_product = ProductRentSerializer(many=True)
+class OrderSerializer(serializers.ModelSerializer):
+    order_products = OrderProductSerializer(many=True)
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
-        model = Rent
-        fields = ("id", "user", "rent_product")
+        model = Order
+        fields = ("id", "user","insurance", "order_products")
 
     def create(self, validated_data):
-        rent_product = validated_data.pop("rent_product")
-        rent = Rent.objects.create(**validated_data)
+        order_products = validated_data.pop("order_products")
+        order = Order.objects.create(**validated_data)
 
-        rent_product_items = []
-        for rent_products in rent_product:
-            rent_product_items.append(
-                ProductRent(rent=rent, **rent_products)
+        order_products_items = []
+        for order_product in order_products:
+            order_products_items.append(
+                OrderProduct(order=order, **order_product)
             )
 
-        ProductRent.objects.bulk_create(rent_product_items)
+        OrderProduct.objects.bulk_create(order_products_items)
 
-        return rent"""
+        return order

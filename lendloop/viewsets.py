@@ -1,10 +1,10 @@
 from rest_framework.viewsets import ModelViewSet
 
-from lendloop.models import Product, Category, Availability
-    #Rent
-from lendloop.serializers import ProductSerializer, CategorySerializer, ProductViewSerializer, AvailabilitySerializer
-    #RentSerializer
+from lendloop.models import Product, Category, Availability, Order
+from lendloop.serializers import ProductSerializer, CategorySerializer, ProductViewSerializer, AvailabilitySerializer,\
+    OrderSerializer
 from rest_framework.permissions import IsAuthenticated
+from lendloop.permissions import IsOwnerOrSuperAdmin
 
 
 
@@ -35,6 +35,15 @@ class AvailabilityViewSet(ModelViewSet):
     serializer_class = AvailabilitySerializer
     permission_classes = (IsAuthenticated,)
 
-#class RentViewSet(ModelViewSet):
-#    serializer_class = RentSerializer
-#    queryset = Rent.objects.all()
+class OrderViewSet(ModelViewSet):
+    serializer_class = OrderSerializer
+    permission_classes = (IsAuthenticated, IsOwnerOrSuperAdmin)
+    queryset = Order.objects.all()
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.is_superuser:
+            return self.queryset.all()
+        else:
+            return self.queryset.filter(user=self.request.user)
