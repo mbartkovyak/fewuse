@@ -17,14 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from lendloop.viewsets import ProductViewSet, CategoryViewSet, AvailabilityViewSet, OrderViewSet
+from lendloop.viewsets import ProductViewSet, CategoryViewSet, OrderViewSet
 from rest_framework.authtoken.views import obtain_auth_token
 from lendloop.views import registration_view
 
 router = DefaultRouter()
 router.register('products', ProductViewSet)
 router.register('categories', CategoryViewSet)
-router.register('availabilities', AvailabilityViewSet)
 router.register('orders', OrderViewSet)
 
 urlpatterns = [

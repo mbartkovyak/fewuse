@@ -2,10 +2,9 @@ import random
 from datetime import date
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
-from lendloop.models import Product, Category, Tag, Location, Ranking
+from lendloop.models import Product, Category, Tag, Location, Ranking, Availability
 
-# Predefined lists
+# Predefined lists (update these lists as per your requirement)
 product_names = [
     "Laptop", "Smartphone", "Headphones", "Smartwatch", "Camera",
     "Tablet", "Speaker", "Mouse", "Keyboard", "Monitor",
@@ -33,31 +32,14 @@ product_descriptions = [
     "Multifunctional printer", "High-speed document scanner"
 ]
 
-tag_names = ["New", "Sale", "Popular", "Limited Edition", "Bestseller"]
-
-location_names = ["Boston", "New York", "San Francisco", "Chicago", "Los Angeles"]
-
-def create_tags():
-    return [Tag.objects.get_or_create(name=tag_name)[0] for tag_name in tag_names]
-
-def create_locations():
-    return [Location.objects.get_or_create(location=location_name)[0] for location_name in location_names]
-
-def create_ranking():
-    try:
-        stars = round(random.uniform(1, 5), 1)  # Generates a float between 1 and 5, rounded to 1 decimal
-        comment = "Sample comment"  # Placeholder comment
-        return Ranking.objects.create(stars=stars, comment=comment)
-    except ValidationError:
-        return None
-
-def insert_products(products, tags, locations):
+def insert_products(products, tags, locations, availabilities):
     for product in products:
         category_name = product["category"]
         category, _ = Category.objects.get_or_create(name=category_name)
 
         location = random.choice(locations)
         product_tags = random.sample(tags, 2)  # Select 2 random tags
+        product_availabilities = random.sample(availabilities, min(len(availabilities), 3))  # Select up to 3 random availabilities
 
         product_instance = Product.objects.create(
             name=product["name"],
@@ -70,23 +52,20 @@ def insert_products(products, tags, locations):
         )
 
         product_instance.tags.set(product_tags)
-
-        # Create and assign a random ranking
-        ranking = create_ranking()
-        if ranking:
-            product_instance.rankings.add(ranking)
+        product_instance.availabilities.set(product_availabilities)
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
         # Assuming there are some users in the database
         users = list(User.objects.all())
-
         if not users:
             print("No users found in the database.")
             return
 
-        tags = create_tags()
-        locations = create_locations()
+        # Fetching tags, locations, and availabilities
+        tags = list(Tag.objects.all())
+        locations = list(Location.objects.all())
+        availabilities = list(Availability.objects.all())
 
         products = []
         for i, product_name in enumerate(product_names):
@@ -102,4 +81,5 @@ class Command(BaseCommand):
                 "category": category_name,
             })
 
-        insert_products(products, tags, locations)
+        insert_products(products, tags, locations, availabilities)
+

@@ -1,8 +1,8 @@
 from rest_framework.viewsets import ModelViewSet
 from django_filters.rest_framework import DjangoFilterBackend
 
-from lendloop.models import Product, Category, Availability, Order
-from lendloop.serializers import ProductSerializer, CategorySerializer, ProductViewSerializer, AvailabilitySerializer,\
+from lendloop.models import Product, Category, Order
+from lendloop.serializers import ProductSerializer, CategorySerializer, ProductViewSerializer,\
     OrderSerializer
 from rest_framework.permissions import IsAuthenticated
 from lendloop.permissions import IsOwnerOrSuperAdmin
@@ -14,7 +14,8 @@ from lendloop.filters import ProductFilter
 class ProductViewSet(ModelViewSet):
     # foreign_key - select_related | many to many - prefetch_related
     queryset = Product.objects.all().\
-        select_related("category").prefetch_related("tags").select_related("location").prefetch_related("rankings").select_related("user")
+        select_related("category").prefetch_related("tags").select_related("location").prefetch_related("rankings")\
+        .select_related("user").prefetch_related("availabilities")
     #limits only for authenticated users
     permission_classes = (IsAuthenticated,)
     filter_backends = (DjangoFilterBackend,)
@@ -34,10 +35,6 @@ class CategoryViewSet(ModelViewSet):
     serializer_class = CategorySerializer
     permission_classes = (IsAuthenticated,)
 
-class AvailabilityViewSet(ModelViewSet):
-    queryset = Availability.objects.all()
-    serializer_class = AvailabilitySerializer
-    permission_classes = (IsAuthenticated,)
 
 class OrderViewSet(ModelViewSet):
     serializer_class = OrderSerializer

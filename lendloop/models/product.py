@@ -26,5 +26,6 @@ class Product(models.Model):
         "lendloop.Order", through="lendloop.OrderProduct"
     )
 
+
     def __str__(self):
         return self.name

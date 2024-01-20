@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from lendloop.models import Product, Category,Tag, Location, Availability, Order, OrderProduct
+from lendloop.models import Product, Category,Tag, Location, Order, OrderProduct
 from rest_framework.authtoken.models import Token
 
 
@@ -9,18 +9,13 @@ from rest_framework.authtoken.models import Token
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ('id', 'name','user','created_at','price','description','category', 'tags','location','rankings')
+        fields = ('id', 'name','user','created_at','price','description','category', 'tags','location','rankings','availabilities')
 
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ('id', 'name','description')
-
-class AvailabilitySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Availability
-        fields = ('id','date_from', 'date_to')
 
 
 class TagSerializer(serializers.ModelSerializer):

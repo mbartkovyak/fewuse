@@ -1,4 +1,3 @@
-from .availability import Availability
 from .category import Category
 from .location import Location
 from .product import Product
@@ -9,7 +8,6 @@ from .subcategory import SubCategory
 from .tag import Tag
 from .order_product import OrderProduct
 __all__ = [
-    "Availability",
     "Category",
     "Location",
     "Product",
