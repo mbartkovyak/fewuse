@@ -1,4 +1,5 @@
 import django_filters
+from django.forms.widgets import DateInput
 
 
 class ProductFilter(django_filters.FilterSet):
@@ -7,8 +8,17 @@ class ProductFilter(django_filters.FilterSet):
         field_name="price", lookup_expr="gt")
     price__lt = django_filters.NumberFilter(
         field_name="price", lookup_expr="lt")
-    start_date = django_filters.DateFilter(
-        'availabilities', label=('With start date')
+    date_from = django_filters.DateFilter(
+        field_name='date_from',
+        label='Available from',
+        lookup_expr='gte',
+        widget=DateInput(attrs={'type': 'date'})
+    )
+    date_to = django_filters.DateFilter(
+        field_name='date_to',
+        label='Available to',
+        lookup_expr='lte',
+        widget=DateInput(attrs={'type': 'date'})
     )
 
     description = django_filters.CharFilter(lookup_expr="icontains")
@@ -17,13 +27,3 @@ class ProductFilter(django_filters.FilterSet):
     category = django_filters.CharFilter(
         field_name="category__name", lookup_expr="iexact"
     )
-
-"""    q = django_filters.CharFilter(method="filter_by_q", label="Search")
-
-    def filter_by_q(self, queryset, name, value):
-        return (
-            queryset.filter(name__icontains=value)
-            | queryset.filter(description__icontains=value)
-            | queryset.filter(category__name__icontains=value)
-        )
-"""

@@ -9,7 +9,7 @@ from rest_framework.authtoken.models import Token
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ('id', 'name','user','created_at','price','description','category', 'tags','location','rankings','availabilities')
+        fields = ('id', 'name','user','created_at','price','description','category', 'tags','location','rankings', 'date_from', 'date_to')
 
 
 class CategorySerializer(serializers.ModelSerializer):

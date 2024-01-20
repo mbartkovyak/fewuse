@@ -1,12 +1,13 @@
 from rest_framework.viewsets import ModelViewSet
 from django_filters.rest_framework import DjangoFilterBackend
-
+from rest_framework.filters import OrderingFilter
 from lendloop.models import Product, Category, Order
 from lendloop.serializers import ProductSerializer, CategorySerializer, ProductViewSerializer,\
     OrderSerializer
 from rest_framework.permissions import IsAuthenticated
 from lendloop.permissions import IsOwnerOrSuperAdmin
 from lendloop.filters import ProductFilter
+from rest_framework.pagination import CursorPagination
 
 
 
@@ -15,11 +16,16 @@ class ProductViewSet(ModelViewSet):
     # foreign_key - select_related | many to many - prefetch_related
     queryset = Product.objects.all().\
         select_related("category").prefetch_related("tags").select_related("location").prefetch_related("rankings")\
-        .select_related("user").prefetch_related("availabilities")
+        .select_related("user")
     #limits only for authenticated users
     permission_classes = (IsAuthenticated,)
-    filter_backends = (DjangoFilterBackend,)
+    filter_backends = (DjangoFilterBackend,OrderingFilter)
     filterset_class = ProductFilter
+
+    pagination_class = CursorPagination
+
+    ordering_fields = ("date_from", "name")
+    ordering = ("date_from",)
 
     #If we use GET method, we see all the data,
     #if we do POST, DELETE, etc we see only Product data and category id (no category details)
