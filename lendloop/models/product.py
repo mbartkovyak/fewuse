@@ -25,8 +25,8 @@ class Product(models.Model):
     orders = models.ManyToManyField(
         "lendloop.Order", through="lendloop.OrderProduct"
     )
-    date_from = models.DateField(blank=True, null=True)
-    date_to = models.DateField(blank=True, null=True)
+    date_from = models.DateField()
+    date_to = models.DateField()
 
     def __str__(self):
         return self.name

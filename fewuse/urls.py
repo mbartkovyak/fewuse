@@ -20,6 +20,7 @@ from rest_framework.routers import DefaultRouter
 from lendloop.viewsets import ProductViewSet, CategoryViewSet, OrderViewSet
 from rest_framework.authtoken.views import obtain_auth_token
 from lendloop.views import registration_view
+from telegram.views import accept_telegram_message
 
 router = DefaultRouter()
 router.register('products', ProductViewSet)
@@ -31,6 +32,7 @@ urlpatterns = [
     path("api/auth/", obtain_auth_token),
     path('api/', include(router.urls)),
     path('api/register/', registration_view),
+    path('telegram/', accept_telegram_message),
 ]
 
 

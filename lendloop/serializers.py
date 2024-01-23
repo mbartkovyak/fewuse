@@ -2,14 +2,34 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from lendloop.models import Product, Category,Tag, Location, Order, OrderProduct
 from rest_framework.authtoken.models import Token
+from lendloop.tasks import product_created_task
 
 
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     class Meta:
         model = Product
         fields = ('id', 'name','user','created_at','price','description','category', 'tags','location','rankings', 'date_from', 'date_to')
+
+    def create(self, validated_data):
+        # Extract many-to-many fields data
+        tags_data = validated_data.pop('tags', None)
+        rankings_data = validated_data.pop('rankings', None)
+
+        # Create the Product instance without many-to-many fields
+        product = Product.objects.create(**validated_data)
+
+        # Set the many-to-many relationships after the instance is created
+        if tags_data is not None:
+            product.tags.set(tags_data)
+        if rankings_data is not None:
+            product.rankings.set(rankings_data)
+
+        product_created_task.delay(product.id)
+
+        return product
 
 
 class CategorySerializer(serializers.ModelSerializer):
