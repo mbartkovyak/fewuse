@@ -1,6 +1,7 @@
 from django.db import models
 
 
+
 class OrderProduct(models.Model):
     order = models.ForeignKey(
         "lendloop.Order", on_delete=models.CASCADE,
@@ -18,4 +19,5 @@ class OrderProduct(models.Model):
 
     def __str__(self):
         return f"{self.product.name} x {self.number_of_days}"
+
 

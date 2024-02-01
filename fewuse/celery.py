@@ -12,3 +12,4 @@ broker_connection_retry_on_startup = True
 @app.task(bind=True)
 def hello_world_task(self):
     print("Hello World!")
+

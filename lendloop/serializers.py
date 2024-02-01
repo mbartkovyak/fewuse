@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from lendloop.models import Product, Category,Tag, Location, Order, OrderProduct
 from rest_framework.authtoken.models import Token
-from lendloop.tasks import product_created_task
+from lendloop.tasks import order_created_task
 
 
 
@@ -26,8 +26,6 @@ class ProductSerializer(serializers.ModelSerializer):
             product.tags.set(tags_data)
         if rankings_data is not None:
             product.rankings.set(rankings_data)
-
-        product_created_task.delay(product.id)
 
         return product
 
@@ -77,7 +75,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ("id", "user","insurance", "order_products")
+        fields = ("id", "user", "insurance", "order_products")
 
     def create(self, validated_data):
         order_products = validated_data.pop("order_products")

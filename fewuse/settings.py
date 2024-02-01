@@ -69,7 +69,7 @@ ROOT_URLCONF = 'fewuse.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -161,9 +161,21 @@ REST_FRAMEWORK = {
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 broker_connection_retry_on_startup = True
 
+CELERY_IMPORTS = ('lendloop.tasks',)
+
+
 CELERY_BEAT_SCHEDULE = {
-    "write_to_sheets": {
-        "task": "products.tasks.every_minute_task",
-        "schedule": 60.0,
+    "every_minute": {
+        "task": "lendloop.tasks.every_minute_task",
+        "schedule": 10.0,
     },
 }
+
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+EMAIL_USE_TLS = True

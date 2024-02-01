@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #e6f7ff; /* Light blue background */
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+            border-left: 5px solid #34a8eb; /* Blue border */
+        }
+
+        .email-header {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            border-bottom: 3px solid #34a8eb; /* Blue border */
+        }
+
+        .email-content {
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .order-item {
+            margin: 10px 0;
+            border-top: 2px dotted #34a8eb; /* Blue dotted line */
+            padding-top: 10px;
+        }
+
+        h2, p {
+            margin: 0;
+        }
+
+        h2 {
+            color: #34a8eb; /* Blue color */
+            font-size: 24px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="email-header">
+            <h2>New Order</h2>
+        </div>
+        <div class="email-content">
+            <p><strong>Hi! Thanks for your order!</strong></p>
+            <p>Your order id is: {{ order_id }}</p>
+
+            {% for order_product in order_products %}
+            <div class="order-item">
+                <p><strong>You ordered:</strong> {{ order_product.product.name }}</p>
+                <p><strong>Product Cost:</strong> for {{ order_product.number_of_days }} days is {{ order_product.product_cost }}</p>
+                <p><strong>Insurance Cost:</strong> for {{ order_product.number_of_days }} days is {{ order_product.insurance_cost }}</p>
+                <p><strong>Total cost:</strong> {{ order_product.total_item_cost }}</p>
+            </div>
+            {% endfor %}
+
+            <p><strong>User:</strong> {{ user_id }}</p>
+        </div>
+    </div>
+</body>
+</html>
