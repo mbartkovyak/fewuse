@@ -165,11 +165,17 @@ CELERY_IMPORTS = ('lendloop.tasks',)
 
 
 CELERY_BEAT_SCHEDULE = {
-    "every_minute": {
+ """   "write_to_sheets": {
         "task": "lendloop.tasks.every_minute_task",
-        "schedule": 10.0,
+        "schedule": 10000.0,
+    }, """
+    "write_new_products_to_sheet": {
+        "task": "lendloop.tasks.every_day_task",
+        "schedule": 86400.0,
     },
 }
+CELERY_BEAT_MAX_LOOP_INTERVAL = 86400  # 1 day in seconds
+
 
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 

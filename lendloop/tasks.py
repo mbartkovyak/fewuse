@@ -1,6 +1,9 @@
 from fewuse.celery import app
-from lendloop.models import Order
 import logging
+from google_sheets.service import write_to_sheet
+from lendloop.models import Product, Order
+from django.utils import timezone
+from datetime import timedelta
 
 
 
@@ -115,3 +118,19 @@ def order_created_task(self, order_id):
         [order.user.email],
         html_message=html_message
     )
+
+
+@app.task(bind=True)
+def every_day_task(self):
+
+    product_data = []
+    yesterday = timezone.now().date() - timedelta(days=1)
+    products_created_yesterday = Product.objects.filter(created_at=yesterday)
+    for product in products_created_yesterday:
+        product_data.append([product.id, product.name, product.price])
+
+    print(product_data)
+    write_to_sheet(product_data)
+
+    return "every_day_task is executed"
+
