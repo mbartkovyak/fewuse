@@ -1,4 +1,6 @@
 from django.db import models
+from datetime import timedelta
+from django.core.exceptions import ValidationError
 
 
 
@@ -11,13 +13,14 @@ class OrderProduct(models.Model):
         "lendloop.Product", on_delete=models.CASCADE,
         related_name="order_products"
     )
-    insurance = models.ForeignKey(
-        "lendloop.insurance", on_delete=models.CASCADE,
-        related_name="order_insurance"
-    )
-    number_of_days = models.PositiveIntegerField(default=1)
+    start_date = models.DateField()  # Rental period start date
+    end_date = models.DateField()    # Rental period end date
+
+    def rental_period_length(self):
+        # Calculate the length of the rental period
+        return (self.end_date - self.start_date).days + 1  # Including both start and end dates
 
     def __str__(self):
-        return f"{self.product.name} x {self.number_of_days}"
+        return f"{self.product.name} ({self.start_date} to {self.end_date})"
 
 

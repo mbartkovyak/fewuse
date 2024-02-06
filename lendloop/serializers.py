@@ -2,7 +2,6 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from lendloop.models import Product, Category,Tag, Location, Order, OrderProduct
 from rest_framework.authtoken.models import Token
-from lendloop.tasks import order_created_task
 
 
 
@@ -11,7 +10,7 @@ class ProductSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     class Meta:
         model = Product
-        fields = ('id', 'name','user','created_at','price','description','category', 'tags','location','rankings', 'date_from', 'date_to')
+        fields = ('id', 'name','user','created_at','price','description','category', 'tags','location','rankings')
 
     def create(self, validated_data):
         # Extract many-to-many fields data
@@ -67,7 +66,37 @@ class RegistrationSerializer(serializers.ModelSerializer):
 class OrderProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderProduct
-        fields = ("product","insurance", "number_of_days")
+        fields = ("product", "start_date", "end_date", "rental_period_length")
+
+    def get_rental_period_length(self, obj):
+        return obj.rental_period_length()
+
+    def validate(self, data):
+        """
+        Perform various validations:
+        - Check that the start_date is before the end_date.
+        - Check that the product is not already booked for the given date range.
+        """
+        if data['start_date'] >= data['end_date']:
+            raise serializers.ValidationError("The end date must be after the start date.")
+
+        product_id = data['product']
+        start_date = data['start_date']
+        end_date = data['end_date']
+
+        # Check for overlapping bookings
+        overlapping_orders = Order.objects.filter(
+            order_products__product=product_id,
+            order_products__start_date__lt=end_date,
+            order_products__end_date__gt=start_date
+        )
+
+        if overlapping_orders.exists():
+            raise serializers.ValidationError(
+                f"Product {product_id} is already booked in the given date range."
+            )
+
+        return data
 
 class OrderSerializer(serializers.ModelSerializer):
     order_products = OrderProductSerializer(many=True)
@@ -78,15 +107,15 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = ("id", "user", "insurance", "order_products")
 
     def create(self, validated_data):
-        order_products = validated_data.pop("order_products")
+        order_products_data = validated_data.pop("order_products")
         order = Order.objects.create(**validated_data)
 
-        order_products_items = []
-        for order_product in order_products:
-            order_products_items.append(
-                OrderProduct(order=order, **order_product)
-            )
+        order_products_instances = []
+        for product_data in order_products_data:
+            # Notice we're not popping insurance from product_data anymore
+            order_products_instances.append(OrderProduct(order=order, **product_data))
 
-        OrderProduct.objects.bulk_create(order_products_items)
+        OrderProduct.objects.bulk_create(order_products_instances)
 
         return order
+

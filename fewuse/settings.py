@@ -167,7 +167,7 @@ CELERY_IMPORTS = ('lendloop.tasks',)
 CELERY_BEAT_SCHEDULE = {
  """   "write_to_sheets": {
         "task": "lendloop.tasks.every_minute_task",
-        "schedule": 10000.0,
+        "schedule": 10.0,
     }, """
     "write_new_products_to_sheet": {
         "task": "lendloop.tasks.every_day_task",
@@ -185,3 +185,4 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = True
+

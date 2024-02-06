@@ -4,6 +4,7 @@ from lendloop.models.category import Category
 from lendloop.models.tag import Tag
 from lendloop.models.location import Location
 from lendloop.models.ranking import Ranking
+from django.db.models import Q
 
 def non_negative_validator(value):
     if value <= 0:
@@ -11,11 +12,10 @@ def non_negative_validator(value):
 
 
 
-# Create your models here.
 class Product(models.Model):
     name = models.CharField(max_length=40)
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='products')
-    created_at = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
     price = models.FloatField(validators=[non_negative_validator])
     description = models.CharField(max_length=300, blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products', blank=True, null=True)
@@ -25,10 +25,15 @@ class Product(models.Model):
     orders = models.ManyToManyField(
         "lendloop.Order", through="lendloop.OrderProduct"
     )
-    date_from = models.DateField()
-    date_to = models.DateField()
+
+
+    def is_available(self, start_date, end_date):
+        # Check if there are any order_products that overlap with the requested dates
+        overlapping_orders = self.order_products.filter(
+            Q(start_date__lte=end_date) & Q(end_date__gte=start_date)
+        )
+        return not overlapping_orders.exists()
 
     def __str__(self):
         return self.name
-
 
