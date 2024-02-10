@@ -11,14 +11,3 @@ class SubCategory(models.Model):
     class Meta:
         verbose_name_plural = 'SubCategories'
 
-
-
-
-
-
-
-
-
-
-
-

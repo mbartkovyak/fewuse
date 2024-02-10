@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from lendloop.models import Product, Category,Tag, Location, Order, OrderProduct
+from lendloop.models import Product, Category,Tag, Location, Order, OrderProduct, Review
 from rest_framework.authtoken.models import Token
 
 
@@ -10,12 +10,11 @@ class ProductSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     class Meta:
         model = Product
-        fields = ('id', 'name','user','created_at','price','description','category', 'tags','location','rankings')
+        fields = ('id', 'name','user','created_at','price','description','category', 'tags','location')
 
     def create(self, validated_data):
         # Extract many-to-many fields data
         tags_data = validated_data.pop('tags', None)
-        rankings_data = validated_data.pop('rankings', None)
 
         # Create the Product instance without many-to-many fields
         product = Product.objects.create(**validated_data)
@@ -23,8 +22,6 @@ class ProductSerializer(serializers.ModelSerializer):
         # Set the many-to-many relationships after the instance is created
         if tags_data is not None:
             product.tags.set(tags_data)
-        if rankings_data is not None:
-            product.rankings.set(rankings_data)
 
         return product
 
@@ -45,10 +42,6 @@ class LocationSerializer(serializers.ModelSerializer):
         model = Location
         fields = ("id", "name")
 
-
-class ProductViewSerializer(ProductSerializer):
-    category = CategorySerializer()
-    tags = TagSerializer(many=True)
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -118,4 +111,38 @@ class OrderSerializer(serializers.ModelSerializer):
         OrderProduct.objects.bulk_create(order_products_instances)
 
         return order
+
+
+class ProductViewSerializer(ProductSerializer):
+    category = CategorySerializer()
+    tags = TagSerializer(many=True)
+
+    class Meta:
+        model = Product
+        # Specify the fields that you want to include in the serialized output
+        fields = ['id', 'name', 'price', 'category', 'tags', 'location', 'user', 'reviews']
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    # Use SlugRelatedField to display product names instead of IDs
+    product = serializers.SlugRelatedField(
+        slug_field='name',
+        queryset=Product.objects.none()  # Default queryset, will be overridden
+    )
+
+    class Meta:
+        model = Review
+        fields = ['id', 'stars', 'comment', 'product']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        user = self.context['request'].user
+        if user.is_authenticated:
+            # Set the queryset for 'product' field to products that the user has ordered
+            self.fields['product'].queryset = Product.objects.filter(
+                order_products__order__user=user
+            ).distinct()
+
+
 

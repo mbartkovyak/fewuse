@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('lendloop', '0007_ranking_product_rankings'),
+        ('lendloop', '0006_availability'),
     ]
 
     operations = [

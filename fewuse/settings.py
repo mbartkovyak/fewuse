@@ -88,15 +88,24 @@ WSGI_APPLICATION = 'fewuse.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+
+postgres_db = {
+    'ENGINE': 'django.db.backends.postgresql',
+    'NAME': os.environ.get("DB_NAME"),
+    'HOST': os.environ.get("DB_HOST"),
+    "PORT": os.environ.get("DB_PORT", 5432),
+    'USER': os.environ.get("DB_USER"),
+    'PASSWORD': os.environ.get("DB_PASSWORD"),
+}
+
+sqlite_db = {
+    "ENGINE": "django.db.backends.sqlite3",
+    "NAME": BASE_DIR / "db.sqlite3",
+}
+
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get("DB_NAME"),
-        'HOST': os.environ.get("DB_HOST"),
-        "PORT": os.environ.get("DB_PORT", 5432),
-        'USER': os.environ.get("DB_USER"),
-        'PASSWORD': os.environ.get("DB_PASSWORD"),
-    }
+    'default': os.environ.get("DB_NAME") and postgres_db or sqlite_db
 }
 
 
@@ -149,7 +158,7 @@ REST_FRAMEWORK = {
         'rest_framework.permission.IsAuthenticated',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        #'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ],

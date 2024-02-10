@@ -2,7 +2,7 @@ from .category import Category
 from .location import Location
 from .product import Product
 from .order import Order
-from .ranking import Ranking
+from .review import Review
 from .insurance import Insurance
 from .subcategory import SubCategory
 from .tag import Tag
@@ -12,7 +12,7 @@ __all__ = [
     "Location",
     "Product",
     "Order",
-    "Ranking",
+    "Review",
     "Insurance",
     "SubCategory",
     "Tag",

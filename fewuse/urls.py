@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from lendloop.viewsets import ProductViewSet, CategoryViewSet, OrderViewSet
+from lendloop.viewsets import ProductViewSet, CategoryViewSet, OrderViewSet, ReviewViewSet
 from rest_framework.authtoken.views import obtain_auth_token
 from lendloop.views import registration_view
 from telegram.views import accept_telegram_message
@@ -26,6 +26,7 @@ router = DefaultRouter()
 router.register('products', ProductViewSet)
 router.register('categories', CategoryViewSet)
 router.register('orders', OrderViewSet)
+router.register('reviews', ReviewViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
