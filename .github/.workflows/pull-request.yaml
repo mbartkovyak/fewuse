@@ -26,7 +26,7 @@ jobs:
           flake8 .
       - name: Test with Django test
         run: |
-          python manage.py test lendloop.tests.models.test_product.ProductAvailabilityTestCase
+          python manage.py test
       - name: Check migrations
         run: |
           python manage.py makemigrations --check --dry-run
