@@ -3,7 +3,6 @@ from django.db import models
 from lendloop.models.category import Category
 from lendloop.models.tag import Tag
 from lendloop.models.location import Location
-from lendloop.models.review import Review
 from django.db.models import Q
 
 def non_negative_validator(value):

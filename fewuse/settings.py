@@ -105,9 +105,9 @@ sqlite_db = {
 
 
 DATABASES = {
-    'default': os.environ.get("DB_NAME") and postgres_db or sqlite_db
+    "default": os.environ.get("USE_SQLITE", "False") == "True" and
+    sqlite_db or postgres_db,
 }
-
 
 
 # Password validation
@@ -167,7 +167,7 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 5,
 }
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'redis://localhost:6379/0')
 broker_connection_retry_on_startup = True
 
 CELERY_IMPORTS = ('lendloop.tasks',)
@@ -186,7 +186,7 @@ CELERY_BEAT_SCHEDULE = {
 CELERY_BEAT_MAX_LOOP_INTERVAL = 86400  # 1 day in seconds
 
 
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"

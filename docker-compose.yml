@@ -1,0 +1,74 @@
+services:
+  web:
+    container_name: web
+    build:
+      context: .
+      dockerfile:  Dockerfile
+    ports:
+      - "8001:8000"
+    volumes:
+      - .:/app
+    environment:
+#- DB_HOST=host.docker.internal for desktop DB use
+      - DB_HOST=db
+      - DB_USER=postgres
+      - DB_PASSWORD=259755
+      - DB_NAME=fewuse
+      - CELERY_BROKER_URL=redis://redis:6379/0
+    depends_on:
+      - db
+    command: [ "python", "manage.py", "runserver", "0.0.0.0:8000"]
+    restart: always
+
+
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    environment:
+      - DB_HOST=db
+      - DB_USER=postgres
+      - DB_PASSWORD=259755
+      - DB_PORT=5432
+      - DB_NAME=fewuse
+      - DEBUG=True
+    command: [ "python", "manage.py", "migrate" ]
+    restart: on-failure
+
+  db:
+    image: "postgres:16"
+    ports:
+      - "54322:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 259755
+      POSTGRES_DB: fewuse
+
+  redis:
+    image: "redis:latest"
+    ports:
+      - "63799:6379"
+
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - .:/app
+    environment:
+      - DB_HOST=db
+      - DB_USER=postgres
+      - DB_PASSWORD=259755
+      - DB_NAME=fewuse
+      - DEBUG=True
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - DB_PORT=5432
+    command: ["celery", "-A", "fewuse.celery", "worker", "-l", "info", "--beat"]
+    restart: on-failure
