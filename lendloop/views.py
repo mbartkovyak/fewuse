@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from lendloop.serializers import RegistrationSerializer
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 
+
 @api_view(["POST"])
 @permission_classes([])
 @authentication_classes([])

@@ -17,7 +17,8 @@ services:
       - CELERY_BROKER_URL=redis://redis:6379/0
     depends_on:
       - db
-    command: [ "python", "manage.py", "runserver", "0.0.0.0:8000"]
+    command: ["gunicorn", "-c", "gunicorn_config.py", "fewuse.wsgi"]
+#    command: [ "python", "manage.py", "runserver", "0.0.0.0:8000"]
     restart: always
 
 
@@ -42,7 +43,7 @@ services:
   db:
     image: "postgres:16"
     ports:
-      - "54322:5432"
+      - "5433:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 259755
