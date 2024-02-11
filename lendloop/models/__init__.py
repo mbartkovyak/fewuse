@@ -7,6 +7,7 @@ from .insurance import Insurance
 from .subcategory import SubCategory
 from .tag import Tag
 from .order_product import OrderProduct
+from .delivery import Delivery
 __all__ = [
     "Category",
     "Location",
@@ -17,4 +18,5 @@ __all__ = [
     "SubCategory",
     "Tag",
     "OrderProduct",
+    "Delivery",
 ]

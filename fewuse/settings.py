@@ -52,6 +52,10 @@ INSTALLED_APPS = [
     'django_filters',
     'celery',
     'graphene_django',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
     # Local apps (user-defined)
     'lendloop',
 ]
@@ -202,3 +206,21 @@ EMAIL_USE_TLS = True
 GRAPHENE = {
     "SCHEMA": "fewuse.schema.schema"
 }
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+    },
+}
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'

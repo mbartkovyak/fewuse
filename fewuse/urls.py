@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from django.views.decorators.csrf import csrf_exempt
+
+from fewuse.views import google_auth_callback, google_auth_redirect
 from lendloop.viewsets import ProductViewSet, CategoryViewSet, OrderViewSet, ReviewViewSet
 from rest_framework.authtoken.views import obtain_auth_token
 from lendloop.views import registration_view
@@ -26,6 +28,8 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from graphene_django.views import GraphQLView
+from django.views.generic import TemplateView
+from django.contrib.auth.views import LogoutView
 
 
 router = DefaultRouter()
@@ -57,6 +61,9 @@ urlpatterns = [
     path('api/swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('api/redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path("graphql", csrf_exempt(GraphQLView.as_view(graphiql=True))),
+    path("", TemplateView.as_view(template_name="index.html")),
+    path("accounts/", include("allauth.urls")),
+    path("logout", LogoutView.as_view()),
 
 ]
 

@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from lendloop.models import Product, Category,Tag, Location, Order, OrderProduct, Review
+from lendloop.models import Product, Category,Tag, Location, Order, OrderProduct, Review, Delivery
 from rest_framework.authtoken.models import Token
 
 
@@ -42,7 +42,10 @@ class LocationSerializer(serializers.ModelSerializer):
         model = Location
         fields = ("id", "name")
 
-
+class DeliverySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Delivery
+        fields = ['id', 'delivery_type']
 
 class RegistrationSerializer(serializers.ModelSerializer):
     token = serializers.SerializerMethodField(read_only=True)
@@ -94,10 +97,15 @@ class OrderProductSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     order_products = OrderProductSerializer(many=True)
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    delivery_option = serializers.PrimaryKeyRelatedField(
+        queryset=Delivery.objects.all(),
+        required=False,
+        allow_null=True
+    )
 
     class Meta:
         model = Order
-        fields = ("id", "user", "insurance", "order_products")
+        fields = ("id", "user", "delivery_option", "insurance", "order_products")
 
     def create(self, validated_data):
         order_products_data = validated_data.pop("order_products")
