@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from django.views.decorators.csrf import csrf_exempt
 from lendloop.viewsets import ProductViewSet, CategoryViewSet, OrderViewSet, ReviewViewSet
 from rest_framework.authtoken.views import obtain_auth_token
 from lendloop.views import registration_view
@@ -24,6 +25,7 @@ from telegram.views import accept_telegram_message
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
+from graphene_django.views import GraphQLView
 
 
 router = DefaultRouter()
@@ -54,6 +56,8 @@ urlpatterns = [
     path('api/swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('api/swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('api/redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path("graphql", csrf_exempt(GraphQLView.as_view(graphiql=True))),
+
 ]
 
 
